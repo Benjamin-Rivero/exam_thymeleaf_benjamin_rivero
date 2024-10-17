@@ -12,6 +12,7 @@
     <p th:utext="'Facture '+${facture.getId()}"></p>
     <p th:utext="'Client : '+${facture.getClient().getRaisonSociale()}"></p>
     <p th:utext="'Emeteur : '+${facture.getEmeteur().getRaisonSociale()}"></p>
+    <p th:if="${facture.getDatePayment()}" th:utext="'Réglé le '+${facture.getDatePayment()}"></p>
     <table style="table-layout: fixed;width: 100%;">
         <thead>
         <tr>
