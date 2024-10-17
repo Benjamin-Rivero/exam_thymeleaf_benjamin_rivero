@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<header th:replace="~{parts/fragments :: header}">
+</header>
+<p class="ms-3" th:utext="'Les factures > Facture n°'+${facture.getId()}+' > Les Lignes'"></p>
+
+<div class="container my-3 min-vh-100">
+    <a th:href="@{/detail/{facture}(facture=${facture.getId()})}"><button class="btn btn-primary">Retour</button></a>
+    <a th:href="@{/ligne/{facture}/ajout(facture=${facture.getId()})}"><button class="btn btn-success">Ajouter une ligne</button></a>
+
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Identifiant</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">TVA</th>
+            <th scope="col">Description</th>
+            <th scope="col">Prix unitaire HT</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <th:block th:each="ligne : ${facture.getLignes()}">
+            <tr>
+                <td th:utext="${ligne.getId()}"></td>
+                <td th:utext="${#numbers.formatDecimal(ligne.getQuantity(),0,0)}"></td>
+                <td th:utext="${ligne.getTva().getLibelle()}"></td>
+                <td th:utext="${ligne.getDesignation()}"></td>
+                <td th:utext="${ligne.getPrixHt()}+' €'"></td>
+
+            </tr>
+        </th:block>
+    </table>
+
+</div>
+
+<footer th:replace="~{parts/fragments :: footer}">
+</footer>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:name="facture">
+<head>
+    <meta charset="UTF-8" />
+    <title>Facture</title>
+    <style>table,th,td {
+        border: 1px solid;border-collapse: collapse; text-align: center;
+    }</style>
+</head>
+<body>
+
+    <p th:utext="'Facture '+${facture.getId()}"></p>
+    <p th:utext="'Client : '+${facture.getClient().getRaisonSociale()}"></p>
+    <p th:utext="'Emeteur : '+${facture.getEmeteur().getRaisonSociale()}"></p>
+    <table style="table-layout: fixed;width: 100%;">
+        <thead>
+        <tr>
+            <th scope="col">Quantité</th>
+            <th scope="col">Description</th>
+            <th scope="col">Prix unitaire HT</th>
+            <th scope="col">TVA</th>
+            <th scope="col">Total HT</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <th:block th:each="ligne : ${facture.getLignes()}">
+            <tr>
+                <td th:utext="${#numbers.formatDecimal(ligne.getQuantity(),0,0)}"></td>
+                <td th:utext="${ligne.getDesignation()}"></td>
+                <td th:utext="${ligne.getPrixHt()}+' €'"></td>
+                <td th:utext="${ligne.getTva().getLibelle()}"></td>
+                <td th:utext="${#numbers.formatDecimal(ligne.getQuantity()*ligne.getPrixHt(),0,2)}+' €'"></td>
+
+            </tr>
+        </th:block>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Total HT</td>
+            <td th:utext="${#numbers.formatDecimal(facture.totalHt(),0,2)}+' €'"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Total TTC</td>
+            <td th:utext="${#numbers.formatDecimal(facture.totalTtc(),0,2)}+' €'"></td>
+        </tr>
+
+        </tbody>
+    </table>
+    <div th:unless="${facture.getDatePayment()}">
+        <p th:utext="'Réglement par virement bancaire au plus tard le '+${facture.latestPaymentDatePossible()}"></p>
+        <p>Tout retard de paiement d'une quelconque facture fait courir, immédiatement et de plein droits,
+            des intérêts de retard calculés au taux directeur de la BCE majoré de 7 points jusqu'au paiement effectif et intégral</p>
+    </div>
+
+</body>
+</html>

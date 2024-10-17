@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+    <header th:replace="~{parts/fragments :: header}">
+    </header>
+    <p class="ms-3" th:utext="'Les factures'"></p>
+
+    <div class="container my-3 min-vh-100">
+        <div th:if="${factures.isEmpty()}">
+            <p class="text-danger">Il n'y a pas de factures</p>
+        </div>
+
+        <div class="d-flex justify-content-between" th:unless="${factures.isEmpty()}">
+            <th:block th:each="facture : ${factures}">
+                <div class="card col-sm-12 col-md-6 col-lg-3" style="width: 24rem;">
+                    <div class="card-body">
+                        <h5 class="card-title" th:utext="'Facture n°'+${facture.getId()}"></h5>
+                        <p class="card-text" th:utext="'Client : '+${facture.getClient().getRaisonSociale()}"></p>
+                        <p class="card-text" th:utext="'Emetteur : '+${facture.getEmeteur().getRaisonSociale()}"></p>
+                        <p class="card-text" th:if="${facture.getDatePayment}" th:utext="'Réglé le : '+${facture.getDatePayment().getTime()}"></p>
+                        <p class="card-text" th:unless="${facture.getDatePayment}" th:utext="'A régler'"></p>
+                        <a th:href="@{/detail/{facture}(facture=${facture.getId()})}" class="card-link">
+                            <button class="btn btn-primary">Voir le détail</button>
+                        </a>
+                    </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+
+    <footer th:replace="~{parts/fragments :: footer}">
+    </footer>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

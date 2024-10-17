@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+    <header th:replace="~{parts/fragments :: header}">
+    </header>
+    <p class="ms-3" th:utext="'Les factures > Facture n°'+${facture.getId()}"></p>
+
+    <div class="container my-3 min-vh-100">
+        <a th:href="@{/ligne/{facture}(facture=${facture.getId()})}"><button class="btn btn-primary">Voir les lignes</button></a>
+        <a th:href="@{/pdf/{facture}(facture=${facture.getId()})}"><button class="btn btn-success">Export as PDF</button></a>
+
+        <div class="d-flex justify-content-between my-5 text-center">
+            <div th:block class="card" style="width: 24rem;">
+                <div class="card-header">
+                    <h4 class="card-title">Emeteur</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:utext="${facture.getEmeteur().getRaisonSociale()}"></h5>
+                    <p class="card-text" th:utext="${facture.getEmeteur().getSiret()}"></p>
+                    <p class="card-text" th:utext="${facture.getEmeteur().getNumeroRue()+' '+facture.getEmeteur().getRue()}"></p>
+                    <p class="card-text" th:utext="${facture.getEmeteur().getCodePostal()+' - '+facture.getEmeteur().getVille()}"></p>
+                </div>
+            </div>
+
+            <div th:block class="card" style="width: 24rem;">
+                <div class="card-header">
+                    <h4 class="card-title">Client</h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:utext="${facture.getClient().getRaisonSociale()}"></h5>
+                    <p class="card-text" th:utext="${facture.getClient().getSiret()}"></p>
+                    <p class="card-text" th:utext="${facture.getClient().getNumeroRue()+' '+facture.getClient().getRue()}"></p>
+                    <p class="card-text" th:utext="${facture.getClient().getCodePostal()+' - '+facture.getClient().getVille()}"></p>
+                </div>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Quantité</th>
+                <th scope="col">Description</th>
+                <th scope="col">Prix unitaire HT</th>
+                <th scope="col">TVA</th>
+                <th scope="col">Total HT</th>
+            </tr>
+            </thead>
+
+            <tbody>
+                <th:block th:each="ligne : ${facture.getLignes()}">
+                <tr>
+                    <td th:utext="${#numbers.formatDecimal(ligne.getQuantity(),0,0)}"></td>
+                    <td th:utext="${ligne.getDesignation()}"></td>
+                    <td th:utext="${ligne.getPrixHt()}+' €'"></td>
+                    <td th:utext="${ligne.getTva().getLibelle()}"></td>
+                    <td th:utext="${#numbers.formatDecimal(ligne.getQuantity()*ligne.getPrixHt(),0,2)}+' €'"></td>
+
+                </tr>
+                </th:block>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total HT</td>
+                    <td th:utext="${#numbers.formatDecimal(facture.totalHt(),0,2)}+' €'"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>Total TTC</td>
+                    <td th:utext="${#numbers.formatDecimal(facture.totalTtc(),0,2)}+' €'"></td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div th:unless="${facture.getDatePayment()}">
+            <p th:utext="'Réglement par virement bancaire au plus tard le '+${facture.latestPaymentDatePossible()}"></p>
+            <p>Tout retard de paiement d'une quelconque facture fait courir, immédiatement et de plein droits,
+                des intérêts de retard calculés au taux directeur de la BCE majoré de 7 points jusqu'au paiement effectif et intégral</p>
+        </div>
+    </div>
+
+    <footer th:replace="~{parts/fragments :: footer}">
+    </footer>
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>

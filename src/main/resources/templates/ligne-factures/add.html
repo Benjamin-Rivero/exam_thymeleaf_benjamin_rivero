@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:name="add">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+
+<header th:replace="~{parts/fragments :: header}">
+</header>
+<p class="ms-3" th:utext="'Les factures > Facture n°'+${facture.getId()}+' > Les Lignes > Ajout'"></p>
+
+<div class="container my-3 min-vh-100">
+    <form th:object="${ligneFacture}" method="post">
+        <div class="col-12">
+            <div class="form-group">
+                <label for="prixHt" class="form-label">Prix HT</label>
+                <input
+                        th:field="*{prixHt}"
+                        type="number"
+                        step="0.01"
+                        th:class="${#fields.hasErrors('prixHt')}
+                    ?'is-invalid form-control'
+                    :'form-control'"
+                        id="prixHt">
+                <div th:if="${#fields.hasErrors('prixHt')}"
+                     th:errors="*{prixHt}"
+                     id="validationServerNameFeedback"
+                     class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-6">
+                    <label for="quantity" class="form-label">Quantité</label>
+                    <input
+                            th:field="*{quantity}"
+                            type="number"
+                            step="0.01"
+                            th:class="${#fields.hasErrors('quantity')}?'is-invalid form-control':'form-control'"
+                            id="quantity">
+                    <div th:if="${#fields.hasErrors('quantity')}"
+                         th:errors="*{quantity}"
+                         id="validationServerLatitudeFeedback"
+                         class="invalid-feedback">
+                    </div>
+
+                    <div class="col-6">
+                        <label for="tva" class="form-label">Tva</label>
+                        <select id="tva" th:field="*{tva}" th:class="'form-select '+(${#fields.hasErrors('tva')}?'is-invalid form-control':'form-control')">
+                            <option selected value="0">Tva</option>
+                            <th:block th:each="tva: ${tvas}">
+                            <option th:value="${tva.getId()}" th:utext="${tva.getLibelle()}"></option>
+                            </th:block>
+                        </select>
+                        <div th:if="${#fields.hasErrors('tva')}"
+                             th:errors="*{tva}"
+                             id="validationServerLongitudeFeedback"
+                             class="invalid-feedback">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <input
+                            id="description"
+                            type="text"
+                            th:class="${#fields.hasErrors('designation')}?'is-invalid form-control':'form-control'"
+                            th:field="*{designation}"
+                    >
+                    <div th:if="${#fields.hasErrors('designation')}"
+                         th:errors="*{designation}"
+                         id="validationServerpeoplesNumberFeedback"
+                         class="invalid-feedback">
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success w-100" type="submit">Ajouter la ligne</button>
+        </div>
+    </form>
+
+
+</div>
+
+<footer th:replace="~{parts/fragments :: footer}">
+</footer>
+<script th:src="@{/js/bootstrap.min.js}"></script>
+</body>
+</html>
